@@ -1,0 +1,46 @@
+# ### 1. Chung (OS & Editors) ###
+# Bỏ qua các file do hệ điều hành (macOS, Windows) tạo ra
+.DS_Store
+Thumbs.db
+
+# Bỏ qua các file cài đặt của IDE/Editor (Visual Studio, VS Code, JetBrains)
+.vs/
+.idea/
+*.suo
+*.DotSettings.user
+
+
+# ### 2. Front-End (JavaScript / Node.js / Expo) ###
+
+# Thư mục này sẽ được cài lại bằng 'npm install' hoặc 'yarn install'
+node_modules/
+
+# Bỏ qua các thư mục build (được tạo lại khi build)
+build/
+dist/
+.output/
+.next/
+.expo/
+.expo-private/
+
+# Các file này chứa API keys, mật khẩu, và các "bí mật" khác.
+.env
+.env.local
+.env.*.local
+
+# Bỏ qua các file log
+npm-debug.log*
+yarn-error.log*
+
+
+# ### 3. Back-End (.NET) ###
+
+# File này chứa mật khẩu "password=123456" của database local
+appsettings.Development.json
+
+# Bỏ qua .NET User Secrets (cách lưu bí mật khác)
+UserSecrets/
+
+# Bỏ qua các thư mục build (được tạo lại khi build)
+bin/
+obj/
