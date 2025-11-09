@@ -9,7 +9,7 @@ export default function MovieCard({item}) {
         <Link href={`movies/${item.movieId}`} asChild className=" w-[30%] bg-[#75746b] rounded-lg">
             <TouchableOpacity>
                 <Image source={{uri: item.poster}}
-                       className="w-full h-32"
+                       className="w-full h-56"
                        resizeMode="stretch"
                 />
                 <View className="px-2 pb-1 flex-col s">

@@ -21,8 +21,8 @@ COPY --from=build /app/publish .
 
 # Mặc định, image aspnet:8.0 chạy trên port 8080.
 # Khai báo port để người dùng biết container này lắng nghe ở port nào.
-ENV ASPNETCORE_URLS=http://+:8080
-EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:80
+EXPOSE 80
 
 # Lệnh để khởi động API của bạn
 ENTRYPOINT ["dotnet", "MovieApp_backend.dll"]

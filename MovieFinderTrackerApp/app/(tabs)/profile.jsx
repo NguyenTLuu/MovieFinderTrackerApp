@@ -1,5 +1,5 @@
-import React from 'react';
-import {Text, View} from 'react-native';
+import React from 'react'
+import { Text, View } from 'react-native'
 
 export default function Bookmarks() {
     return (
@@ -8,5 +8,5 @@ export default function Bookmarks() {
                 This is profile screen
             </Text>
         </View>
-    );
+    )
 }

@@ -13,8 +13,19 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
+string connectionStringName;
+if (builder.Environment.IsDevelopment())
+{
+    connectionStringName = "DBConnection";
+}
+else
+{
+    connectionStringName = "AzureDBConnection";
+}
+
 builder.Services.AddDbContext<MovieAppContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString(connectionStringName)));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,7 +39,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
