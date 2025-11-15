@@ -13,6 +13,9 @@
         public List<int> CountryIds { get; set; }
         public List<int > CastIds { get; set; }
         public int DirectorId { get; set; }
+
+        public int Runtime { get; set; }
+        public string Backdrop { get; set; }
     }
 
     public class MovieCreateDto
@@ -27,6 +30,9 @@
         public List<int> CastIds { get; set; }
         public int DirectorId { get; set; }
         public double Rating { get; set; }
+
+        public int Runtime { get; set; }
+        public string Backdrop { get; set; }
 
     }
 }

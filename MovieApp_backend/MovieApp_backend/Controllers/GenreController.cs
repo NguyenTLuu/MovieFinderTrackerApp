@@ -55,5 +55,23 @@ namespace MovieApp_backend.Controllers
             return Ok(genre);
 
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GenreReadDto>> UpdateGenre(int id, [FromForm] GenreCreateDto dto)
+        {
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
+            {
+                return NotFound($"No genre with id: {id} was found");
+            }
+            genre.Name = dto.Name;
+            await _context.SaveChangesAsync();
+            var result = new GenreReadDto
+            {
+                GenreId = genre.GenreId,
+                Name = genre.Name
+            };
+            return Ok(result);
+        }
     }
 }

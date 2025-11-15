@@ -21,17 +21,20 @@ namespace MovieApp_backend.Controllers
         public async Task<ActionResult<IEnumerable<MovieReadDto>>> GetMovies()
         {
             var movies = await _context.Movies
-                .Include(m => m.Genres)
+                .Include(m => m.MovieGenres)
+                .Include(m => m.MovieCountries)
+                .Include(m => m.MovieLanguages)
+                .Include(m => m.MovieCasts)
                 .Select(m => new MovieReadDto
                 {
                     MovieId = m.MovieId,
                     Title = m.Title,
                     ReleaseYear = m.ReleaseYear,
                     DirectorId = m.DirectorId,
-                    GenreIds = m.Genres.Select(g => g.GenreId).ToList(),
-                    CountryIds = m.Countries.Select(g => g.CountryId).ToList(),
-                    LanguageIds = m.Languages.Select(g => g.LanguageId).ToList(),
-                    CastIds = m.Casts.Select(g => g.CastId).ToList(),
+                    GenreIds = m.MovieGenres.Select(mg => mg.GenreId).ToList(),
+                    CountryIds = m.MovieCountries.Select(mc => mc.CountryId).ToList(),
+                    LanguageIds = m.MovieLanguages.Select(ml => ml.LanguageId).ToList(),
+                    CastIds = m.MovieCasts.Select(mca => mca.CastId).ToList(),
                     Rating = m.Rating,
                     Description = m.Description,
                     Poster = m.Poster
@@ -49,21 +52,14 @@ namespace MovieApp_backend.Controllers
                 Title = dto.Title,
                 ReleaseYear = dto.ReleaseYear,
                 DirectorId = dto.DirectorId,
-                Genres = await _context.Genres
-                    .Where(g => dto.GenreIds.Contains(g.GenreId))
-                    .ToListAsync(),
-                Poster = dto.Poster,
+                MovieGenres = dto.GenreIds.Select(id => new MovieGenre { GenreId = id }).ToList(),
+                MovieCountries = dto.CountryIds.Select(id => new MovieCountry { CountryId = id }).ToList(),
+                MovieLanguages = dto.LanguageIds.Select(id => new MovieLanguage { LanguageId = id }).ToList(),
+                MovieCasts = dto.CastIds.Select(id => new MovieCast { CastId = id }).ToList(),
                 Description = dto.Description,
-                Languages = await _context.Languages
-                    .Where(l => dto.LanguageIds.Contains(l.LanguageId))
-                    .ToListAsync(),
-                Countries = await _context.Countries
-                    .Where(c => dto.CountryIds.Contains(c.CountryId))
-                    .ToListAsync(),
-                Casts = await _context.Casts
-                    .Where(ca => dto.CastIds.Contains(ca.CastId))
-                    .ToListAsync(),
-                Rating = dto.Rating
+                Rating = dto.Rating,
+                Backdrop = dto.Backdrop, 
+                Runtime = dto.Runtime,   
             };
 
             _context.Movies.Add(movie);
@@ -75,26 +71,51 @@ namespace MovieApp_backend.Controllers
                 Title = movie.Title,
                 ReleaseYear = movie.ReleaseYear,
                 DirectorId = movie.DirectorId,
-                GenreIds = movie.Genres.Select(g => g.GenreId).ToList(),
-                CountryIds = movie.Countries.Select(c => c.CountryId).ToList(),
-                LanguageIds = movie.Languages.Select(l => l.LanguageId).ToList(),
-                CastIds = movie.Casts.Select(ca => ca.CastId).ToList(),
-                Rating = movie.Rating
+                GenreIds = movie.MovieGenres.Select(mg => mg.GenreId).ToList(),
+                CountryIds = movie.MovieCountries.Select(mc => mc.CountryId).ToList(),
+                LanguageIds = movie.MovieLanguages.Select(ml => ml.LanguageId).ToList(),
+                CastIds = movie.MovieCasts.Select(mca => mca.CastId).ToList(),
+                Rating = movie.Rating,
+                Description = movie.Description,
+                Poster = movie.Poster
             };
 
             return CreatedAtAction(nameof(GetMovieById), new { id = movie.MovieId }, result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovieById(int id)
+        public async Task<ActionResult<MovieReadDto>> GetMovieById(int id)
         {
-            var movie = await _context.Movies.Where(m => m.MovieId == id).FirstOrDefaultAsync();
-            if (movie == null)
+            var movieDto = await _context.Movies
+                .Where(m => m.MovieId == id)
+                .Include(m => m.MovieGenres)
+                .Include(m => m.MovieCountries)
+                .Include(m => m.MovieLanguages)
+                .Include(m => m.MovieCasts)
+                .Select(m => new MovieReadDto
+                {
+                    MovieId = m.MovieId,
+                    Title = m.Title,
+                    ReleaseYear = m.ReleaseYear,
+                    DirectorId = m.DirectorId,
+                    GenreIds = m.MovieGenres.Select(mg => mg.GenreId).ToList(),
+                    CountryIds = m.MovieCountries.Select(mc => mc.CountryId).ToList(),
+                    LanguageIds = m.MovieLanguages.Select(ml => ml.LanguageId).ToList(),
+                    CastIds = m.MovieCasts.Select(mca => mca.CastId).ToList(),
+                    Rating = m.Rating,
+                    Description = m.Description,
+                    Poster = m.Poster,
+                    Backdrop = m.Backdrop,
+                    Runtime = m.Runtime
+                })
+                .FirstOrDefaultAsync();
+
+            if (movieDto == null)
             {
                 return NotFound($"Movie with id: {id} is not found");
             }
 
-            return Ok(movie);
+            return Ok(movieDto); 
         }
     }
 }
