@@ -10,6 +10,8 @@ namespace MovieApp_backend.Model
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
-        public ICollection<MovieCountry> MovieCountries { get; set; }  
+        public ICollection<MovieCountry> MovieCountries { get; set; }
+        public ICollection<Director> Directors { get; set; }
+        public ICollection<Cast> Casts { get; set; }
     }
 }

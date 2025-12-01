@@ -18,7 +18,8 @@ namespace MovieApp_backend.Model
         public DbSet<MovieGenre> MovieGenre { get; set; }
         public DbSet<MovieCountry> MovieCountry { get; set; }
         public DbSet<MovieLanguage> MovieLanguage { get; set; }
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserMovie> UserMovies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -34,6 +35,9 @@ namespace MovieApp_backend.Model
 
             modelBuilder.Entity<MovieLanguage>()
                 .HasKey(ml => new { ml.LanguageId, ml.MovieId });
+
+            modelBuilder.Entity<UserMovie>()
+                .HasKey(um => new { um.UserId, um.MovieId });
         }
     }
 }

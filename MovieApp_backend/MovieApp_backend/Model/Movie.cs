@@ -38,9 +38,14 @@ namespace MovieApp_backend.Model
         [Required]
         [MaxLength(1000)]
         public string Backdrop { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Trailer { get; set; }
         public ICollection<MovieCast> MovieCasts { get; set; }
         public ICollection<MovieGenre> MovieGenres { get; set; }
         public ICollection<MovieCountry> MovieCountries { get; set; }
         public ICollection<MovieLanguage> MovieLanguages { get; set; }
+        public ICollection<UserMovie> UserMovies { get; set; }
     }
 }

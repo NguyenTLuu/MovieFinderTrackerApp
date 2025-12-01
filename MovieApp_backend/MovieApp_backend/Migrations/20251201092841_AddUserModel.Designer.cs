@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApp_backend.Model;
 
@@ -11,9 +12,11 @@ using MovieApp_backend.Model;
 namespace MovieApp_backend.Migrations
 {
     [DbContext(typeof(MovieAppContext))]
-    partial class MovieAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251201092841_AddUserModel")]
+    partial class AddUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +41,6 @@ namespace MovieApp_backend.Migrations
                     b.Property<int>("BirthdayYear")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -52,8 +52,6 @@ namespace MovieApp_backend.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("CastId");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Casts");
                 });
@@ -92,9 +90,6 @@ namespace MovieApp_backend.Migrations
                     b.Property<int>("BirthdayYear")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -106,8 +101,6 @@ namespace MovieApp_backend.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("DirectorId");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Directors");
                 });
@@ -326,24 +319,6 @@ namespace MovieApp_backend.Migrations
                     b.ToTable("UserMovies");
                 });
 
-            modelBuilder.Entity("MovieApp_backend.Model.Cast", b =>
-                {
-                    b.HasOne("MovieApp_backend.Model.Country", "Country")
-                        .WithMany("Casts")
-                        .HasForeignKey("CountryId");
-
-                    b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("MovieApp_backend.Model.Director", b =>
-                {
-                    b.HasOne("MovieApp_backend.Model.Country", "Country")
-                        .WithMany("Directors")
-                        .HasForeignKey("CountryId");
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("MovieApp_backend.Model.Movie", b =>
                 {
                     b.HasOne("MovieApp_backend.Model.Director", "Director")
@@ -457,10 +432,6 @@ namespace MovieApp_backend.Migrations
 
             modelBuilder.Entity("MovieApp_backend.Model.Country", b =>
                 {
-                    b.Navigation("Casts");
-
-                    b.Navigation("Directors");
-
                     b.Navigation("MovieCountries");
                 });
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieApp_backend.Model
 {
@@ -18,6 +19,11 @@ namespace MovieApp_backend.Model
         [Required]
         [MaxLength(2048)]
         public string Avatar { get; set; }
+
+        public int? CountryId { get; set; }
+
+        [ForeignKey("CountryId")]
+        public Country Country { get; set; }
 
         [Required]
         public int BirthdayYear { get; set; }

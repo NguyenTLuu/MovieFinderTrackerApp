@@ -33,6 +33,26 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.UseCors("AllowExpo");
 // Configure the HTTP request pipeline.
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        var dbContext = services.GetRequiredService<MovieAppContext>();
+
+     
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error while running migration database.");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

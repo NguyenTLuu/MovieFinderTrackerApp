@@ -6,10 +6,11 @@ import MovieCard from '@/components/MovieCard'
 export default function HomeScreen() {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
-    const myApiUrl = process.env.EXPO_PUBLIC_API_URL
+    const myApiUrl = process.env.EXPO_PUBLIC_APP_API_URL
+    const url = process.env.EXPO_PUBLIC_API_LOCAL
 
     useEffect(() => {
-        fetch(`${myApiUrl}/Movie`)
+        fetch(`${url}/api/Movie`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data)
@@ -18,13 +19,12 @@ export default function HomeScreen() {
             .catch((err) => {
                 console.error(err)
                 setLoading(false)
+                console.log(`${url}/api/Movie`)
             })
     }, [])
     if (loading) {
         return <ActivityIndicator size="large" />
     }
-
-    console.log(data)
 
     return (
         <SafeAreaView className="flex-1 bg-black">

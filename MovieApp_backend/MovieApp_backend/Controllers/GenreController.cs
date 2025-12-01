@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApp_backend.Dto;
 using MovieApp_backend.Model;
+using System.Formats.Asn1;
 
 namespace MovieApp_backend.Controllers
 {
@@ -35,6 +36,18 @@ namespace MovieApp_backend.Controllers
             };
 
             return CreatedAtAction(nameof(GetGenreById), new { id = result.GenreId }, result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllGenres()
+        {
+            var genre = await _context.Genres.AsNoTracking().Select(u => new GenreReadDto
+            {
+                GenreId = u.GenreId,
+                Name = u.Name
+            }).ToListAsync();
+
+            return Ok(genre);
         }
 
         [HttpGet("{id}")]
