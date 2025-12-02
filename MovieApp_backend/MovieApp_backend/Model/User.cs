@@ -34,5 +34,12 @@ namespace MovieApp_backend.Model
 
         public ICollection<UserMovie> UserMovies { get; set; }
 
+        public bool IsVerified { get; set; } = false;
+
+        [MaxLength(6)]
+        public string? VerificationCode { get; set; }
+
+        public DateTime? VerificationCodeExpiresAt { get; set; }
+
     }
 }

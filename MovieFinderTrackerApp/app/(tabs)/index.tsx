@@ -6,7 +6,7 @@ import MovieCard from '@/components/MovieCard'
 export default function HomeScreen() {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
-    const myApiUrl = process.env.EXPO_PUBLIC_APP_API_URL
+    // const myApiUrl = process.env.EXPO_PUBLIC_APP_API_URL
     const url = process.env.EXPO_PUBLIC_API_LOCAL
 
     useEffect(() => {
@@ -23,7 +23,11 @@ export default function HomeScreen() {
             })
     }, [])
     if (loading) {
-        return <ActivityIndicator size="large" />
+        return (
+            <View className="flex-1 items-center justify-center bg-black">
+                <ActivityIndicator size="large" color="white" />
+            </View>
+        )
     }
 
     return (
@@ -37,10 +41,14 @@ export default function HomeScreen() {
                     keyExtractor={(item) => item.movieId.toString()}
                     numColumns={3}
                     renderItem={({ item }) => {
-                        return <MovieCard item={item} />
+                        return (
+                            <View className="w-[31%]">
+                                <MovieCard item={item} />
+                            </View>
+                        )
                     }}
                     columnWrapperStyle={{
-                        justifyContent: 'center',
+                        justifyContent: 'flex-start',
                         gap: 10,
                         paddingRight: 5,
                         marginBottom: 10,

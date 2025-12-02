@@ -4,6 +4,10 @@
     {
         public int CastId { get; set; }
         public string Name { get; set; }
+        public string Country { get; set; }
+        public string Gender { get; set; }
+        public int birthYear { get; set; }
         public string Avatar { get; set; }
+        public List<MovieCardDto> movies { get; set; }
     }
 }

@@ -18,6 +18,15 @@
         public string Backdrop { get; set; }
     }
 
+    public class MovieCardDto
+    {
+        public int MovieId { get; set; }
+        public string Title { get; set; }
+        public int ReleaseYear { get; set; }
+        public string Poster { get; set; }
+        public double Rating { get; set; }
+    }
+
     public class MovieCreateDto
     {
         public string Title { get; set; }
