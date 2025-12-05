@@ -28,6 +28,7 @@ namespace MovieApp_backend.Controllers
                     Country = d.Country.Name,
                     Avatar = d.Avatar,
                     birthYear = d.BirthdayYear,
+                    bio = d.bio,
                     movies = d.Movies.Select(m => new MovieCardDto
                     {
                         MovieId = m.MovieId,

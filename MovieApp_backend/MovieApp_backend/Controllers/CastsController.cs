@@ -27,6 +27,7 @@ namespace MovieApp_backend.Controllers
                 Avatar = c.Avatar,
                 birthYear = c.BirthdayYear,
                 Gender = c.Gender,
+                bio = c.bio,
                 movies = c.MovieCasts.Select(m => new MovieCardDto
                 {
                     MovieId = m.Movie.MovieId,

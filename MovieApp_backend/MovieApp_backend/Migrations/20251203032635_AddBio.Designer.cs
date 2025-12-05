@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApp_backend.Model;
 
@@ -11,9 +12,11 @@ using MovieApp_backend.Model;
 namespace MovieApp_backend.Migrations
 {
     [DbContext(typeof(MovieAppContext))]
-    partial class MovieAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251203032635_AddBio")]
+    partial class AddBio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,8 +56,8 @@ namespace MovieApp_backend.Migrations
 
                     b.Property<string>("bio")
                         .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
 
                     b.HasKey("CastId");
 
@@ -112,8 +115,8 @@ namespace MovieApp_backend.Migrations
 
                     b.Property<string>("bio")
                         .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
 
                     b.HasKey("DirectorId");
 

@@ -8,6 +8,7 @@
         public string Gender { get; set; }
         public int birthYear { get; set; }  
         public string Avatar { get; set; }
+        public string bio { get; set; }
         public List<MovieCardDto> movies { get; set; }
     }
 }

@@ -22,13 +22,13 @@ namespace MovieApp_backend.Model
         public string Email { get; set; }
 
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         [MaxLength(2048)]
-        public string Avatar { get; set; }
+        public string? Avatar { get; set; }
 
         [MaxLength(20)]
-        public string Role { get; set; } = "User";
+        public string? Role { get; set; } = "User";
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

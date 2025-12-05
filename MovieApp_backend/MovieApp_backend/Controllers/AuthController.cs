@@ -46,7 +46,8 @@ namespace MovieApp_backend.Controllers
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 VerificationCode = verificationCode,
                 VerificationCodeExpiresAt = DateTime.Now.AddMinutes(15), // Hết hạn sau 15p
-                IsVerified = false
+                IsVerified = false,
+                Role = "User"
             };
 
             _context.Users.Add(user);

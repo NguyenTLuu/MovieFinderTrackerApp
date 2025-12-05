@@ -191,7 +191,7 @@ export default function MovieDetail() {
                 </View>
 
                 <View className="flex-1 px-4 pt-2">
-                    <Text className="text-gray-400 text-base leading-6 italic mb-6">
+                    <Text className="text-gray-400 text-base leading-6 italic mb-6 text-justify hyphens-auto">
                         "{movie.description}"
                     </Text>
                     <View>
@@ -226,7 +226,7 @@ export default function MovieDetail() {
                                             height: 80,
                                             borderRadius: 40,
                                             borderWidth: 2,
-                                            borderColor: '#dedede',
+                                            borderColor: '#737373',
                                         }}
                                         resizeMode="cover"
                                     />
@@ -258,7 +258,7 @@ export default function MovieDetail() {
                                             height: 80,
                                             borderRadius: 40,
                                             borderWidth: 2,
-                                            borderColor: '#dedede',
+                                            borderColor: '#737373',
                                         }}
                                         resizeMode="cover"
                                     />

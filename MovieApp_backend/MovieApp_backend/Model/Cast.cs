@@ -29,5 +29,8 @@ namespace MovieApp_backend.Model
         public int BirthdayYear { get; set; }
 
         public ICollection<MovieCast> MovieCasts { get; set; }
+
+        [MaxLength(4000)]
+        public string bio { get; set; }
     }
 }

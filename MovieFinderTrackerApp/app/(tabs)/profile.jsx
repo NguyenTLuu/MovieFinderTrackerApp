@@ -1,12 +1,12 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import { View, Button } from 'react-native'
+import { useAuth } from '../../context/AuthContext'
 
-export default function Bookmarks() {
+export default function Profile() {
+    const { signOut } = useAuth()
+
     return (
-        <View className="flex-1 justify-center items-center ">
-            <Text className="text-pink-500 text-lg font-bold">
-                This is profile screen
-            </Text>
+        <View className="flex-1 bg-black justify-center items-center">
+            <Button title="Log Out" color="#ef4444" onPress={signOut} />
         </View>
     )
 }

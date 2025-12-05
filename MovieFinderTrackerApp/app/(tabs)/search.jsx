@@ -133,7 +133,6 @@ export default function Search() {
     return (
         <SafeAreaView className="flex-1 px-4 py-4 bg-black">
             <View className="flex-row items-center bg-gray-800 rounded-full px-4 py-2 border border-gray-600 py-0">
-                {/* Icon Search */}
                 <Ionicons name="search" size={20} color="gray" />
 
                 <TextInput
@@ -159,7 +158,7 @@ export default function Search() {
                         setOpen={setOpenGenre}
                         setValue={setSelectedGenre}
                         setItems={setGenreItems}
-                        placeholder="Select a Genre"
+                        placeholder="Select Genre"
                         onOpen={onOpenGenre}
                         theme="DARK"
                         style={{
