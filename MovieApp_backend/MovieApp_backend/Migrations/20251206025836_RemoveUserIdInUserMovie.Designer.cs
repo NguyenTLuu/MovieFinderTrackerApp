@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieApp_backend.Model;
 
@@ -11,9 +12,11 @@ using MovieApp_backend.Model;
 namespace MovieApp_backend.Migrations
 {
     [DbContext(typeof(MovieAppContext))]
-    partial class MovieAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251206025836_RemoveUserIdInUserMovie")]
+    partial class RemoveUserIdInUserMovie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -399,9 +402,14 @@ namespace MovieApp_backend.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("CustomListId", "MovieId");
 
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserMovies");
                 });
@@ -555,6 +563,10 @@ namespace MovieApp_backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MovieApp_backend.Model.User", null)
+                        .WithMany("UserMovies")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("CustomList");
 
                     b.Navigation("Movie");
@@ -599,6 +611,11 @@ namespace MovieApp_backend.Migrations
 
                     b.Navigation("MovieLanguages");
 
+                    b.Navigation("UserMovies");
+                });
+
+            modelBuilder.Entity("MovieApp_backend.Model.User", b =>
+                {
                     b.Navigation("UserMovies");
                 });
 #pragma warning restore 612, 618

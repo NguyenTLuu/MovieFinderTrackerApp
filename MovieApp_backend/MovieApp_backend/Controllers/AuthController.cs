@@ -29,35 +29,65 @@ namespace MovieApp_backend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
+            // 1. Khai báo transaction
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                return BadRequest("Email already exists.");
+                if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
+                {
+                    return BadRequest("Email already exists.");
+                }
+
+                // Tạo User
+                var user = new User
+                {
+                    Username = dto.Username,
+                    Email = dto.Email,
+                    FullName = dto.FullName,
+                    Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                    VerificationCode = new Random().Next(100000, 999999).ToString(),
+                    VerificationCodeExpiresAt = DateTime.Now.AddMinutes(15),
+                    IsVerified = false,
+                    Role = "User"
+                };
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                // Tạo List mặc định
+                var defaultLists = new List<CustomList>
+                {
+                    new CustomList { Name = "Watchlist", UserId = user.UserId, IsSystemDefault = true },
+                    new CustomList { Name = "Watched", UserId = user.UserId, IsSystemDefault = true }
+                };
+
+                _context.CustomLists.AddRange(defaultLists);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                try
+                {
+                    await _emailService.SendEmailAsync(user.Email, "Verify your account",
+                        $"Your verification code is: {user.VerificationCode}");
+                }
+                catch (Exception emailEx)
+                {
+                    // Nếu gửi mail lỗi, User vẫn được tạo thành công (vì đã Commit).
+                    // Ta chỉ log lỗi hoặc báo user gửi lại code sau.
+                    // KHÔNG ĐƯỢC ROLLBACK Ở ĐÂY.
+                    return Ok("Registration successful, but email failed to send. Please request code resend.");
+                }
+
+                return Ok("Registration successful. Please check your email.");
             }
-
-            // Tạo mã xác nhận 6 số ngẫu nhiên
-            var verificationCode = new Random().Next(100000, 999999).ToString();
-
-            var user = new User
+            catch (Exception ex)
             {
-                Username = dto.Username,
-                Email = dto.Email,
-                FullName = dto.FullName,
-                // Hash mật khẩu (Không lưu plain text)
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                VerificationCode = verificationCode,
-                VerificationCodeExpiresAt = DateTime.Now.AddMinutes(15), // Hết hạn sau 15p
-                IsVerified = false,
-                Role = "User"
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            // Gửi email
-            await _emailService.SendEmailAsync(user.Email, "Verify your account",
-                $"Your verification code is: {verificationCode}");
-
-            return Ok("Registration successful. Please check your email for the verification code.");
+                // 3. Chỉ Rollback khi lỗi xảy ra TRƯỚC khi Commit
+                await transaction.RollbackAsync();
+                return StatusCode(500, "Internal Server Error: " + ex.Message);
+            }
         }
 
         // 2. Xác thực Code
@@ -111,7 +141,7 @@ namespace MovieApp_backend.Controllers
             // Tạo Token JWT
             string token = CreateToken(user);
 
-            return Ok(new { Token = token, UserId = user.UserId, Username = user.Username, Role = user.Role });
+            return Ok(new { Token = token, UserId = user.UserId, Username = user.Username, Role = user.Role, Fullname = user.FullName });
         }
 
         // Hàm tạo JWT Token

@@ -32,8 +32,6 @@ namespace MovieApp_backend.Model
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<UserMovie> UserMovies { get; set; }
-
         public bool IsVerified { get; set; } = false;
 
         [MaxLength(6)]

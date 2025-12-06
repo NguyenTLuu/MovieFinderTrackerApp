@@ -68,22 +68,29 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         if (!tokenExp) return
 
-        const intervalId = setInterval(() => {
+        const checkToken = setInterval(() => {
             const now = Date.now()
             if (now >= tokenExp) {
                 signOut()
             }
         }, 30_000)
-        return () => clearInterval(intervalId)
+        return () => clearInterval(checkToken)
     }, [tokenExp])
 
-    const signIn = async (token) => {
+    const signIn = async (data) => {
+        const { token, userId, username, role, fullName } = data
         const decoded = jwtDecode(token)
         const expiry = decoded.exp * 1000
 
         await AsyncStorage.setItem('userToken', token)
         await AsyncStorage.setItem('tokenExpiry', expiry.toString())
-        setUser({ token })
+        setUser({
+            token,
+            userId,
+            username,
+            role,
+            fullName,
+        })
         setTokenExp(expiry)
         setIsAuthenticated(true)
     }

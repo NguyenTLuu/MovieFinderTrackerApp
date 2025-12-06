@@ -20,6 +20,8 @@ namespace MovieApp_backend.Model
         public DbSet<MovieLanguage> MovieLanguage { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserMovie> UserMovies { get; set; }
+        public DbSet<CustomList> CustomLists { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,7 +39,11 @@ namespace MovieApp_backend.Model
                 .HasKey(ml => new { ml.LanguageId, ml.MovieId });
 
             modelBuilder.Entity<UserMovie>()
-                .HasKey(um => new { um.UserId, um.MovieId });
+                .HasKey(um => new { um.CustomListId, um.MovieId });
+
+            modelBuilder.Entity<Review>()
+                .HasIndex(r => new { r.UserId, r.MovieId })
+                .IsUnique();
         }
     }
 }

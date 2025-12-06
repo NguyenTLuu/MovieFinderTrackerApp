@@ -151,12 +151,13 @@ export default function CastDetail() {
                         </TouchableOpacity>
                     )}
                 </View>
-                <View className="mt-4 px-4">
+                <View className="mt-4 px-4 h-[280px]">
                     <Text className="mb-4 text-white text-xl font-bold border-l-4 border-[#f5c518] pl-2">
                         Known For
                     </Text>
                     <FlatList
                         horizontal
+                        removeClippedSubviews={false}
                         contentContainerStyle={{
                             paddingHorizontal: 14,
                             gap: 12,

@@ -37,7 +37,7 @@ export default function Login() {
 
             if (response.ok) {
                 const data = await response.json()
-                signIn(data.token)
+                signIn(data)
             } else {
                 const errorText = await response.text()
                 Alert.alert('Login Fail', errorText)
