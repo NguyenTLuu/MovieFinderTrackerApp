@@ -132,7 +132,7 @@ export default function Search() {
 
     return (
         <SafeAreaView className="flex-1 px-4 py-4 bg-black">
-            <View className="flex-row items-center bg-gray-800 rounded-full px-4 py-2 border border-gray-600 py-0">
+            <View className="flex-row items-center bg-gray-800 rounded-full px-4 py-2 border border-gray-600 ">
                 <Ionicons name="search" size={20} color="gray" />
 
                 <TextInput

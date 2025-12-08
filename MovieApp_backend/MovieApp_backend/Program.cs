@@ -34,11 +34,14 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+
+        Scheme = "Bearer",
+
+        BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Name = "Authorization",
+        Description = "Enter token"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -94,12 +97,12 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = services.GetRequiredService<MovieAppContext>();
 
-     
+
         dbContext.Database.Migrate();
     }
     catch (Exception ex)
     {
-        
+
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "Error while running migration database.");
     }

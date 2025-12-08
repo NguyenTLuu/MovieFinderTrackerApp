@@ -20,7 +20,6 @@ namespace MovieApp_backend.Controllers
 
         private string GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        // 1. Thêm đánh giá
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> AddReview([FromBody] ReviewCreateDto dto)
@@ -48,7 +47,6 @@ namespace MovieApp_backend.Controllers
             return Ok("Review added.");
         }
 
-        // 2. Lấy danh sách đánh giá của phim
         [HttpGet("movie/{movieId}")]
         public async Task<ActionResult<IEnumerable<ReviewReadDto>>> GetReviews(int movieId)
         {
@@ -70,7 +68,31 @@ namespace MovieApp_backend.Controllers
             return Ok(reviews);
         }
 
-        // 3. Xóa Review (của mình)
+        [HttpGet("my-reviews")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<object>>> GetMyReviews()
+        {
+            var userId = GetUserId();
+
+            var reviews = await _context.Reviews
+                .Include(r => r.Movie) // Join bảng Movie để lấy tên phim
+                .Where(r => r.UserId == userId)
+                .OrderByDescending(r => r.CreatedAt)
+                .Select(r => new
+                {
+                    ReviewId = r.ReviewId,
+                    MovieId = r.MovieId,
+                    MovieTitle = r.Movie.Title,   // Tên phim
+                    MoviePoster = r.Movie.Poster, // Poster phim (để hiển thị cho đẹp)
+                    Rating = r.Rating,
+                    Content = r.Content,
+                    CreatedAt = r.CreatedAt
+                })
+                .ToListAsync();
+
+            return Ok(reviews);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteReview(int id)

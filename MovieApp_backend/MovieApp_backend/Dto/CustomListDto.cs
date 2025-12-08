@@ -7,6 +7,7 @@ namespace MovieApp_backend.Dto
         public int CustomListId { get; set; }
         public string Name { get; set; }
         public bool IsSystemDefault { get; set; }
+        public int MovieCount { get; set; }
     }
 
     public class CreateListDto

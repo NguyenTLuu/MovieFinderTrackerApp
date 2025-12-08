@@ -26,16 +26,21 @@ function RootStack() {
             screenOptions={{
                 headerShown: false,
                 contentStyle: { backgroundColor: '#000' },
+                animation: 'slide_from_right',
+                animationDuration: 250,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
             }}
         >
             <Stack.Protected guard={!isAuthenticated}>
-                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
             </Stack.Protected>
             <Stack.Protected guard={isAuthenticated}>
-                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
                 <Stack.Screen name="movies" />
                 <Stack.Screen name="directors" />
                 <Stack.Screen name="casts" />
+                <Stack.Screen name="lists" />
             </Stack.Protected>
         </Stack>
     )

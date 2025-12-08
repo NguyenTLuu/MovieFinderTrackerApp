@@ -22,23 +22,31 @@ export function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [tokenExp, setTokenExp] = useState(null)
 
+    const [systemListIds, setSystemListIds] = useState({
+        watchlistId: null,
+        watchedId: null,
+    })
+
+    const url = process.env.EXPO_PUBLIC_API_LOCAL
+
     const signOut = useCallback(async () => {
         await AsyncStorage.removeItem('userToken')
         await AsyncStorage.removeItem('tokenExpiry')
         setUser(null)
         setIsAuthenticated(false)
         setTokenExp(null)
+        setSystemListIds({ watchlistId: null, watchedId: null })
     }, [])
 
     useEffect(() => {
         const loadUser = async () => {
             try {
                 const now = Date.now()
-                const token = await AsyncStorage.getItem('userToken')
+                const userData = await AsyncStorage.getItem('userData')
                 const exp = await AsyncStorage.getItem('tokenExpiry')
 
                 // Dont have token or token expired
-                if (!token || !exp) {
+                if (!userData || !exp) {
                     setUser(null)
                     setIsAuthenticated(false)
                     setTokenExp(null)
@@ -50,8 +58,11 @@ export function AuthProvider({ children }) {
                     await signOut()
                     return
                 }
+                // String to Object
+                const JsonUserData = JSON.parse(userData)
 
-                setUser({ token })
+                setUser(JsonUserData)
+                await fetchSystemLists(JsonUserData.token)
                 setIsAuthenticated(true)
                 setTokenExp(parseInt(exp, 10))
             } catch (e) {
@@ -77,30 +88,51 @@ export function AuthProvider({ children }) {
         return () => clearInterval(checkToken)
     }, [tokenExp])
 
+    const fetchSystemLists = async (token) => {
+        try {
+            const response = await fetch(`${url}/api/CustomList`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+
+                const watchlist = data.find(
+                    (l) => l.name === 'Watchlist' && l.isSystemDefault
+                )
+                const watched = data.find(
+                    (l) => l.name === 'Watched' && l.isSystemDefault
+                )
+
+                setSystemListIds({
+                    watchlistId: watchlist?.customListId || null,
+                    watchedId: watched?.customListId || null,
+                })
+            }
+        } catch (error) {
+            console.log('Error fetching system lists', error)
+        }
+    }
+
     const signIn = async (data) => {
-        const { token, userId, username, role, fullName } = data
+        const { token } = data
         const decoded = jwtDecode(token)
         const expiry = decoded.exp * 1000
 
-        await AsyncStorage.setItem('userToken', token)
+        await AsyncStorage.setItem('userData', JSON.stringify(data))
         await AsyncStorage.setItem('tokenExpiry', expiry.toString())
-        setUser({
-            token,
-            userId,
-            username,
-            role,
-            fullName,
-        })
+        setUser(data)
         setTokenExp(expiry)
         setIsAuthenticated(true)
+        await fetchSystemLists(token)
     }
 
     return (
         <AuthContext.Provider
             value={{
+                systemListIds,
                 user,
                 isAuthenticated,
-                loading,
                 signIn,
                 signOut,
             }}

@@ -102,5 +102,21 @@ namespace MovieApp_backend.Controllers
 
             return Ok(movies);
         }
+
+        [HttpGet("check/{movieId}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<int>>> CheckMovieInLists(int movieId)
+        {
+            var userId = GetUserId();
+
+            // Tìm tất cả UserMovie của user này với movieId tương ứng
+            // Sau đó chỉ lấy ra CustomListId
+            var listIds = await _context.UserMovies
+                .Where(um => um.MovieId == movieId && um.CustomList.UserId == userId)
+                .Select(um => um.CustomListId)
+                .ToListAsync();
+
+            return Ok(listIds); // Kết quả trả về VD: [1, 2, 10]
+        }
     }
 }

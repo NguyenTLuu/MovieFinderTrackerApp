@@ -21,9 +21,8 @@ namespace MovieApp_backend.Controllers
         // Helper để lấy UserId từ Token
         private string GetUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        // 1. Lấy tất cả danh sách của User (Watchlist, Watched, Custom...)
         [HttpGet]
-        [Authorize] // Bắt buộc phải có Token mới lấy được
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CustomListDto>>> GetMyLists()
         {
             var userId = GetUserId();
@@ -34,7 +33,8 @@ namespace MovieApp_backend.Controllers
                 {
                     CustomListId = cl.CustomListId,
                     Name = cl.Name,
-                    IsSystemDefault = cl.IsSystemDefault
+                    IsSystemDefault = cl.IsSystemDefault,
+                    MovieCount = _context.UserMovies.Count(um => um.CustomListId == cl.CustomListId)
                 })
                 .ToListAsync();
 
@@ -59,7 +59,7 @@ namespace MovieApp_backend.Controllers
             _context.CustomLists.Add(newList);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "List created", ListId = newList.CustomListId });
+            return Ok(new { Message = "List created", CustomListId = newList.CustomListId, name = newList.Name });
         }
 
         // 3. Xóa danh sách
