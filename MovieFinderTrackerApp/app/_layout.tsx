@@ -41,6 +41,7 @@ function RootStack() {
                 <Stack.Screen name="directors" />
                 <Stack.Screen name="casts" />
                 <Stack.Screen name="lists" />
+                <Stack.Screen name="setting" />
             </Stack.Protected>
         </Stack>
     )

@@ -25,11 +25,9 @@ namespace MovieApp_backend.Controllers
             _emailService = emailService;
         }
 
-        // 1. Đăng ký
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-            // 1. Khai báo transaction
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
@@ -39,7 +37,6 @@ namespace MovieApp_backend.Controllers
                     return BadRequest("Email already exists.");
                 }
 
-                // Tạo User
                 var user = new User
                 {
                     Username = dto.Username,
@@ -55,7 +52,6 @@ namespace MovieApp_backend.Controllers
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                // Tạo List mặc định
                 var defaultLists = new List<CustomList>
                 {
                     new CustomList { Name = "Watchlist", UserId = user.UserId, IsSystemDefault = true },
@@ -74,9 +70,6 @@ namespace MovieApp_backend.Controllers
                 }
                 catch (Exception emailEx)
                 {
-                    // Nếu gửi mail lỗi, User vẫn được tạo thành công (vì đã Commit).
-                    // Ta chỉ log lỗi hoặc báo user gửi lại code sau.
-                    // KHÔNG ĐƯỢC ROLLBACK Ở ĐÂY.
                     return Ok("Registration successful, but email failed to send. Please request code resend.");
                 }
 
@@ -84,13 +77,11 @@ namespace MovieApp_backend.Controllers
             }
             catch (Exception ex)
             {
-                // 3. Chỉ Rollback khi lỗi xảy ra TRƯỚC khi Commit
                 await transaction.RollbackAsync();
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }
 
-        // 2. Xác thực Code
         [HttpPost("verify")]
         public async Task<IActionResult> Verify(VerifyDto dto)
         {
@@ -109,9 +100,8 @@ namespace MovieApp_backend.Controllers
                 return BadRequest("Verification code expired.");
             }
 
-            // Kích hoạt tài khoản
             user.IsVerified = true;
-            user.VerificationCode = null; // Xóa code sau khi dùng
+            user.VerificationCode = null;
             user.VerificationCodeExpiresAt = null;
 
             await _context.SaveChangesAsync();
@@ -119,32 +109,27 @@ namespace MovieApp_backend.Controllers
             return Ok("Account verified successfully.");
         }
 
-        // 3. Đăng nhập (Trả về JWT)
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (user == null) return BadRequest("User not found.");
 
-            // Kiểm tra mật khẩu
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
             {
                 return BadRequest("Wrong password.");
             }
 
-            // Kiểm tra đã kích hoạt chưa
             if (!user.IsVerified)
             {
                 return BadRequest("Account not verified. Please verify your email.");
             }
 
-            // Tạo Token JWT
             string token = CreateToken(user);
 
-            return Ok(new { Token = token, UserId = user.UserId, Username = user.Username, Role = user.Role, Fullname = user.FullName });
+            return Ok(new { Token = token, UserId = user.UserId, Username = user.Username, Role = user.Role, Fullname = user.FullName, avatar = user.Avatar });
         }
 
-        // Hàm tạo JWT Token
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>

@@ -220,14 +220,6 @@ export default function MovieDetail() {
         )
     }
 
-    if (loading || !movie) {
-        return (
-            <View className="flex-1 items-center justify-center bg-black">
-                <ActivityIndicator size="large" color="white" />
-            </View>
-        )
-    }
-
     const runtime = movie.runtime
     const hour = Math.floor(runtime / 60)
     const minute = runtime % 60
@@ -235,13 +227,6 @@ export default function MovieDetail() {
 
     return (
         <SafeAreaView className="bg-black flex flex-col justify-center items-center">
-            <Stack.Screen
-                options={{
-                    title: '',
-                    headerTransparent: true,
-                    headerTintColor: 'white',
-                }}
-            />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
@@ -541,8 +526,8 @@ export default function MovieDetail() {
                             </View>
                         )}
 
-                        {/* Inpuut Review */}
-                        <View className="flex-1 my-3 mt-4bg-gray-800 rounded-2xl border border-gray-700 p-2 h-28">
+                        {/* Input Review */}
+                        <View className="flex-1 my-3 mt-4bg-gray-800 rounded-2xl border bg-gray-800/60 border-gray-700 p-2 h-28">
                             <TextInput
                                 className="flex-1 ml-2 text-white text-base"
                                 placeholder="What do you think about this movie?"
@@ -563,7 +548,6 @@ export default function MovieDetail() {
                                         activeOpacity={0.7}
                                     >
                                         <FontAwesome
-                                            // Nếu star nhỏ hơn hoặc bằng điểm đang chọn thì hiện sao đặc, ngược lại sao rỗng
                                             name={
                                                 star <= rating
                                                     ? 'star'
@@ -594,6 +578,20 @@ export default function MovieDetail() {
                             </TouchableOpacity>
                         </View>
                     </View>
+
+                    <Link
+                        href={{
+                            pathname: '/movies/review',
+                            params: { id: id },
+                        }}
+                        asChild
+                    >
+                        <TouchableOpacity className="justify-center items-center mt-4 ">
+                            <Text className="text-gray-400 font-bold text-base">
+                                Show all reviews
+                            </Text>
+                        </TouchableOpacity>
+                    </Link>
 
                     <View className="h-20" />
                 </ScrollView>

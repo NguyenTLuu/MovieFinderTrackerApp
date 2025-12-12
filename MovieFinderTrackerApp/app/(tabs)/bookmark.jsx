@@ -1,11 +1,4 @@
-import {
-    View,
-    Text,
-    FlatList,
-    TouchableOpacity,
-    RefreshControl,
-    Alert,
-} from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useAuth } from '../../context/AuthContext'
@@ -62,17 +55,17 @@ export default function Bookmark() {
             const message = await response.text()
 
             if (response.ok) {
-                Alert.alert('Thành công', 'Đã xóa danh sách.')
+                Alert.alert('List is Deleted.')
                 setLists((prev) =>
                     prev.filter(
                         (item) => item.customListId !== selectedListToDelete
                     )
                 )
             } else {
-                Alert.alert('Lỗi', message)
+                Alert.alert('Error', message)
             }
         } catch (error) {
-            Alert.alert('Lỗi', 'Không thể kết nối đến server.')
+            Alert.alert('Error', 'Cant connect to the server')
         }
     }
 

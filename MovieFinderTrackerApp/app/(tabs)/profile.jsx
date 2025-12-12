@@ -10,15 +10,11 @@ import {
 import React, { useCallback, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useAuth } from '../../context/AuthContext'
-import {
-    MaterialCommunityIcons,
-    Ionicons,
-    FontAwesome5,
-} from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
 import { useFocusEffect, useRouter } from 'expo-router'
 import { ConfirmModal } from '../../components/ConfirmModal'
 
-// Component con: Một dòng trong Menu
 const ProfileMenuItem = ({
     icon,
     title,
@@ -67,61 +63,53 @@ export default function Profile() {
     const [logoutModalVisible, setLogoutModalVisible] = useState(false)
 
     const [movieInWatched, setMovieInWatched] = useState(0)
-    const [movieInWatchList, setMovieInWatchList] = useState(0)
+    const [totalReview, setTotalReview] = useState(0)
     const [totalList, setTotalList] = useState(0)
 
     const url = process.env.EXPO_PUBLIC_API_LOCAL
 
-    // Ảnh mặc định nếu user chưa có avatar
     const defaultAvatar =
         'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg'
 
     const fetchInitalData = async () => {
         try {
-            const [watchedCount, watchlistCount, listCount] = await Promise.all(
-                [
-                    fetch(
-                        `${url}/api/usermovie/list/${systemListIds.watchedId}`,
-                        {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${user.token}`,
-                            },
-                        }
-                    ),
-                    fetch(
-                        `${url}/api/usermovie/list/${systemListIds.watchlistId}`,
-                        {
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${user.token}`,
-                            },
-                        }
-                    ),
-                    fetch(`${url}/api/customlist`, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${user.token}`,
-                        },
-                    }),
-                ]
-            )
+            const [watchedCount, reviewCount, listCount] = await Promise.all([
+                fetch(`${url}/api/usermovie/list/${systemListIds.watchedId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }),
+                fetch(`${url}/api/review/my-reviews`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }),
+                fetch(`${url}/api/customlist`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }),
+            ])
 
-            if (!watchedCount.ok || !watchlistCount.ok || !listCount.ok) {
+            if (!watchedCount.ok || !reviewCount.ok || !listCount.ok) {
                 throw new Error('Fail to fetch initial data')
             }
 
             const dataWatchedCount = await watchedCount.json()
-            const dataWatchlistCount = await watchlistCount.json()
+            const dataReviewCount = await reviewCount.json()
             const dataListCount = await listCount.json()
 
             setMovieInWatched(dataWatchedCount.length)
-            setMovieInWatchList(dataWatchlistCount.length)
+            setTotalReview(dataReviewCount.length)
             setTotalList(dataListCount.length)
         } catch (err) {
             Alert.alert('Error', err.message)
         }
     }
+
     useFocusEffect(
         useCallback(() => {
             fetchInitalData()
@@ -138,14 +126,6 @@ export default function Profile() {
                             source={{ uri: user?.avatar || defaultAvatar }}
                             className="w-28 h-28 rounded-full border-4 border-[#1f2937]"
                         />
-                        {/* Edit Icon Badge */}
-                        <TouchableOpacity className="absolute bottom-0 right-0 bg-[#f5c518] p-2 rounded-full border-4 border-black">
-                            <MaterialCommunityIcons
-                                name="pencil"
-                                size={16}
-                                color="black"
-                            />
-                        </TouchableOpacity>
                     </View>
 
                     <Text className="text-white text-2xl font-bold mt-4">
@@ -163,35 +143,44 @@ export default function Profile() {
                     </View>
                 </View>
 
-                {/* 2. STATS SECTION (Thống kê nhanh) */}
                 <View className="flex-row justify-between bg-[#1a1a1a] p-4 rounded-2xl mb-8 border border-gray-800">
-                    <TouchableOpacity className="items-center flex-1 border-r border-gray-700">
+                    <View className="items-center flex-1 border-r border-gray-700">
                         <Text className="text-white text-xl font-bold">
                             {movieInWatched}
                         </Text>
                         <Text className="text-gray-500 text-xs mt-1">
                             Watched
                         </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="items-center flex-1 border-r border-gray-700">
+                    </View>
+                    <View className="items-center flex-1 border-r border-gray-700">
                         <Text className="text-white text-xl font-bold">
-                            {movieInWatchList}
+                            {totalReview}
                         </Text>
                         <Text className="text-gray-500 text-xs mt-1">
-                            Watchlist
+                            Reviews
                         </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="items-center flex-1">
+                    </View>
+                    <View className="items-center flex-1">
                         <Text className="text-white text-xl font-bold">
                             {totalList}
                         </Text>
                         <Text className="text-gray-500 text-xs mt-1">
                             Lists
                         </Text>
-                    </TouchableOpacity>
+                    </View>
                 </View>
 
-                {/* 3. MENU SETTINGS */}
+                <Text className="text-gray-500 font-bold mb-3 uppercase text-xs tracking-widest">
+                    Review
+                </Text>
+                <View className="bg-[#1a1a1a] rounded-2xl px-4 mb-6 border border-gray-800">
+                    <ProfileMenuItem
+                        icon="pencil-circle-outline"
+                        title="My Reviews"
+                        onPress={() => router.push('/my-review/all-my-review')}
+                    />
+                </View>
+
                 <Text className="text-gray-500 font-bold mb-3 uppercase text-xs tracking-widest">
                     Account Settings
                 </Text>
@@ -201,17 +190,12 @@ export default function Profile() {
                         icon="account-outline"
                         title="Edit Profile"
                         subtitle="Change avatar, name..."
-                        onPress={() =>
-                            Alert.alert(
-                                'Coming Soon',
-                                'Tính năng đang phát triển'
-                            )
-                        }
+                        onPress={() => router.push('/setting/edit-profile')}
                     />
                     <ProfileMenuItem
                         icon="shield-lock-outline"
                         title="Change Password"
-                        onPress={() => Alert.alert('Coming Soon')}
+                        onPress={() => router.push('/setting/change-password')}
                     />
                 </View>
 

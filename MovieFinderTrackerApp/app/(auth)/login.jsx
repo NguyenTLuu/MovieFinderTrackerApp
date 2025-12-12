@@ -20,7 +20,7 @@ export default function Login() {
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin')
+            Alert.alert('Error', 'Enter all information')
             return
         }
 

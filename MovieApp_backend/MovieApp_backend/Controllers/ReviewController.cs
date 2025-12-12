@@ -75,15 +75,15 @@ namespace MovieApp_backend.Controllers
             var userId = GetUserId();
 
             var reviews = await _context.Reviews
-                .Include(r => r.Movie) // Join bảng Movie để lấy tên phim
+                .Include(r => r.Movie)
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new
                 {
                     ReviewId = r.ReviewId,
                     MovieId = r.MovieId,
-                    MovieTitle = r.Movie.Title,   // Tên phim
-                    MoviePoster = r.Movie.Poster, // Poster phim (để hiển thị cho đẹp)
+                    MovieTitle = r.Movie.Title,
+                    MoviePoster = r.Movie.Poster,
                     Rating = r.Rating,
                     Content = r.Content,
                     CreatedAt = r.CreatedAt

@@ -41,7 +41,7 @@ export default function Register() {
             if (response.ok) {
                 Alert.alert(
                     'Success',
-                    'Đăng ký thành công. Vui lòng kiểm tra email để lấy mã.'
+                    'Check Email to get Verify Code to activate your account'
                 )
                 toVerify()
             } else {
